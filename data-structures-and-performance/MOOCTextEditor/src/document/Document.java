@@ -141,9 +141,7 @@ public abstract class Document {
 	/** return the Flesch readability score of this document */
 	public double getFleschScore()
 	{
-	    // TODO: You will play with this method in week 1, and 
-		// then implement it in week 2
-	    return 0.0;
+	    return 206.835d - 1.015d * (getNumWords() / getNumSentences()) - 84.6d * (getNumSyllables() / getNumWords());
 	}
 	
 	/**
