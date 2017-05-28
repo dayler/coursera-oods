@@ -141,7 +141,7 @@ public abstract class Document {
 	/** return the Flesch readability score of this document */
 	public double getFleschScore()
 	{
-	    return 206.835d - 1.015d * (getNumWords() / getNumSentences()) - 84.6d * (getNumSyllables() / getNumWords());
+	    return 206.835d - 1.015d * ((double)getNumWords() / (double)getNumSentences()) - 84.6d * ((double)getNumSyllables() / (double)getNumWords());
 	}
 	
 	/**
