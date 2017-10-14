@@ -10,9 +10,9 @@ target/**
 *.ear
 *.log
 
-#.project
-#.settings
-#.classpath
+.project
+.settings
+.classpath
 bin/
 
 # netbeans ignore personal stuff #
