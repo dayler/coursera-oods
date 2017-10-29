@@ -10,9 +10,10 @@ target/**
 *.ear
 *.log
 
-.project
-.settings
-.classpath
+## not used maven or something like that. use pure eclipse project ##
+#.project
+#.settings
+#.classpath
 bin/
 
 # netbeans ignore personal stuff #
