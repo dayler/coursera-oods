@@ -1,12 +1,11 @@
 package basicgraph;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import util.GraphLoader;
 
@@ -110,8 +109,6 @@ public abstract class Graph {
 	 * 	via incoming edges to v. 
 	 */
 	public abstract List<Integer> getInNeighbors(int v);
-	
-	
 
 	/** 
 	 * The degree sequence of a graph is a sorted (organized in numerical order 
@@ -121,8 +118,12 @@ public abstract class Graph {
 	 * @return The degree sequence of this graph.
 	 */
 	public List<Integer> degreeSequence() {
-		// XXX: Implement in part 1 of week 2
-		return null;
+		// TODO 
+		return IntStream.range(0, numVertices)
+				        .map(v -> getInNeighbors(v).size() + getNeighbors(v).size())
+				        .boxed()
+				        .sorted(Collections.reverseOrder())
+				        .collect(Collectors.toList());
 	}
 	
 	/**
