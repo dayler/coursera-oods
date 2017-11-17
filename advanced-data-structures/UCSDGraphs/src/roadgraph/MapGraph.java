@@ -7,6 +7,7 @@
  */
 package roadgraph;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import application.Parameters;
 import geography.GeographicPoint;
 import util.GraphLoader;
 
@@ -31,14 +33,6 @@ import util.GraphLoader;
 public class MapGraph {
 
     private Map<GeographicPoint, Set<MapEdge>> vertices = new HashMap<>();
-
-    /**
-     * Create a new empty MapGraph
-     */
-    // public MapGraph()
-    // {
-    // // TODO: Implement in this constructor in WEEK 3
-    // }
 
     /**
      * Get the number of vertices (road intersections) in the graph
@@ -65,7 +59,7 @@ public class MapGraph {
      */
     public int getNumEdges() {
         // TODO: Review, possible bug.
-        return (int)vertices.values().stream().flatMap(Set::stream).count();
+        return (int)vertices.values().stream().flatMap(Set::stream).collect(Collectors.toSet()).size();
     }
 
     /**
@@ -93,11 +87,14 @@ public class MapGraph {
      * length is less than 0.
      */
     public void addEdge(GeographicPoint from, GeographicPoint to, String roadName, String roadType, double length) throws IllegalArgumentException {
-        Parameters.requireNonNull(from, "null from pt.");
-        Parameters.requireNonNull(to, "null to pt.");
-        Parameters.requireNonNull(roadName, "null roadName.");
-        Parameters.requireNonNull(roadType, "null roadType.");
-        Parameters.nonNegative(length, "negative length.");
+        Optional.ofNullable(from).orElseThrow(() -> new IllegalArgumentException("nul from point."));
+        Optional.ofNullable(to).orElseThrow(() -> new IllegalArgumentException("nul to point."));
+        Optional.ofNullable(roadName).orElseThrow(() -> new IllegalArgumentException("nul roadName."));
+        Optional.ofNullable(roadType).orElseThrow(() -> new IllegalArgumentException("nul roadType."));
+        if (Double.compare(length, 0.0D) < 0) {
+            throw new IllegalArgumentException("negative length.");
+        }
+        // 
         checkIfPointIsInGraph(from);
         checkIfPointIsInGraph(to);
         // 
@@ -123,8 +120,9 @@ public class MapGraph {
         Consumer<GeographicPoint> temp = (x) -> {};
         return bfs(start, goal, temp);
     }
-
+    
     /**
+     * TODO 
      * Find the path from start to goal using breadth first search
      * @param start The starting location
      * @param goal The goal location
@@ -132,14 +130,54 @@ public class MapGraph {
      * @return The list of intersections that form the shortest (unweighted) path from start to goal (including both start and goal).
      */
     public List<GeographicPoint> bfs(GeographicPoint start, GeographicPoint goal, Consumer<GeographicPoint> nodeSearched) {
-        // TODO: Implement this method in WEEK 3
-
-        // Hook for visualization. See writeup.
-        // nodeSearched.accept(next.getLocation());
-
-        return null;
+        Optional.ofNullable(start).orElseThrow(() -> new IllegalArgumentException("nul start."));
+        Optional.ofNullable(start).orElseThrow(() -> new IllegalArgumentException("nul goal."));
+        Optional.ofNullable(start).orElseThrow(() -> new IllegalArgumentException("nul nodeSearched."));
+        // 
+        if (start.equals(goal)) {
+            // start are the same o goal.
+            return Arrays.asList(start);
+        }
+        Map<GeographicPoint, GeographicPoint>parent = new HashMap<>();
+        Queue<GeographicPoint>queue = new LinkedList<>();
+        queue.add(start);
+        Set<GeographicPoint>visited = new HashSet<>();
+        do {
+            GeographicPoint current = queue.poll();
+            // look for vizualization.
+            nodeSearched.accept(current);
+            if (current.equals(goal)) {
+                // was find element.
+                break;
+            }
+            // goes through all nodes. 
+            for (MapEdge edge : vertices.get(current)) {
+                if (visited.contains(edge.getToPoint())) {
+                    // do nothing.
+                    continue;
+                }
+                // visit vertex.
+                visited.add(edge.getToPoint());
+                parent.put(edge.getToPoint(), current);
+                queue.offer(edge.getToPoint());
+            }
+        } while (!queue.isEmpty());
+        // build path.
+        return parent.isEmpty() ? Collections.emptyList() : buildPath(parent, start, goal);
     }
-
+    
+    private List<GeographicPoint> buildPath(Map<GeographicPoint, GeographicPoint>parent, GeographicPoint start, GeographicPoint goal) {
+        LinkedList<GeographicPoint>path = new LinkedList<>();
+        GeographicPoint current = goal;
+        while (!current.equals(start)) {
+            path.addFirst(current);
+            current = parent.get(current);
+        }
+        // add start.
+        path.addFirst(start);
+        return path;
+    }
+    
     /**
      * Find the path from start to goal using Dijkstra's algorithm
      * @param start The starting location
