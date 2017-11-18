@@ -32,6 +32,9 @@ import util.GraphLoader;
  */
 public class MapGraph {
 
+	/**
+	 * Vertices registered in the graph.
+	 */
     private Map<GeographicPoint, Set<MapEdge>> vertices = new HashMap<>();
 
     /**
@@ -58,7 +61,6 @@ public class MapGraph {
      * @return The number of edges in the graph.
      */
     public int getNumEdges() {
-        // TODO: Review, possible bug.
         return (int)vertices.values().stream().flatMap(Set::stream).collect(Collectors.toSet()).size();
     }
 
@@ -92,16 +94,22 @@ public class MapGraph {
         Optional.ofNullable(roadName).orElseThrow(() -> new IllegalArgumentException("nul roadName."));
         Optional.ofNullable(roadType).orElseThrow(() -> new IllegalArgumentException("nul roadType."));
         if (Double.compare(length, 0.0D) < 0) {
+        	    // safe way to check negative length.
             throw new IllegalArgumentException("negative length.");
         }
-        // 
+        // check if "from" and "to" have been register.
         checkIfPointIsInGraph(from);
         checkIfPointIsInGraph(to);
-        // 
+        // Add new edge for "from".
         vertices.get(from).add(new MapEdge(to, length, roadName, roadType));
         
     }
     
+    /**
+     * Checks if <code>GeographicPoint</code> has been register in the <code>vertices</code> map,
+     * if it is not registered throws an <code>IllegalArgumentException</code>.
+     * @param point
+     */
     private void checkIfPointIsInGraph(GeographicPoint point) {
         if (vertices.containsKey(point)) {
             return; // No op.
@@ -138,10 +146,11 @@ public class MapGraph {
             // start are the same o goal.
             return Arrays.asList(start);
         }
+        // BFS implementation.
         Map<GeographicPoint, GeographicPoint>parent = new HashMap<>();
-        Queue<GeographicPoint>queue = new LinkedList<>();
+        Queue<GeographicPoint>queue = new LinkedList<>(); // point to be visited.
         queue.add(start);
-        Set<GeographicPoint>visited = new HashSet<>();
+        Set<GeographicPoint>visited = new HashSet<>(); // have been visit points.
         do {
             GeographicPoint current = queue.poll();
             // look for vizualization.
@@ -150,7 +159,7 @@ public class MapGraph {
                 // was find element.
                 break;
             }
-            // goes through all nodes. 
+            // goes through all neighbors nodes. 
             for (MapEdge edge : vertices.get(current)) {
                 if (visited.contains(edge.getToPoint())) {
                     // do nothing.
@@ -166,6 +175,12 @@ public class MapGraph {
         return parent.isEmpty() ? Collections.emptyList() : buildPath(parent, start, goal);
     }
     
+    /**
+     * @param parent
+     * @param start
+     * @param goal
+     * @return Builds the path to get the "goal" point based on the BFS implementation.
+     */
     private List<GeographicPoint> buildPath(Map<GeographicPoint, GeographicPoint>parent, GeographicPoint start, GeographicPoint goal) {
         LinkedList<GeographicPoint>path = new LinkedList<>();
         GeographicPoint current = goal;
@@ -254,6 +269,13 @@ public class MapGraph {
         MapGraph firstMap = new MapGraph();
         System.out.print("DONE. \nLoading the map...");
         GraphLoader.loadRoadMap("data/testdata/simpletest.map", firstMap);
+        
+        GeographicPoint testStart = new GeographicPoint(1.0, 1.0);
+        GeographicPoint testEnd = new GeographicPoint(8.0, -1.0);
+        List<GeographicPoint>path = firstMap.bfs(testStart, testEnd);
+        System.out.println();
+        System.out.println("path:" + path);
+        
         System.out.println("DONE.");
 
         // You can use this method for testing.

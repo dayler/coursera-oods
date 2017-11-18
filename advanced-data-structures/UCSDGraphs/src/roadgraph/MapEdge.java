@@ -14,14 +14,33 @@ import geography.GeographicPoint;
  */
 public class MapEdge {
     
+	/**
+	 * Point to reach form initial vertex.
+	 */
     private GeographicPoint toPoint;
     
+    /**
+     * Name of edge.
+     */
     private String name;
     
+    /**
+     * Type of edge.
+     */
     private String type;
     
+    /**
+     * Value of edge.
+     */
     private double value;
     
+    /**
+     * MapEdge's Constructor.
+     * @param toPoint
+     * @param value
+     * @param name
+     * @param type
+     */
     public MapEdge(GeographicPoint toPoint, double value, String name, String type) {
         Objects.requireNonNull(toPoint);
         //  
