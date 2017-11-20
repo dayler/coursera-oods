@@ -74,7 +74,7 @@ public class MapGraph {
     public boolean addVertex(GeographicPoint location) {
         Objects.requireNonNull(location);
         // 
-        return vertices.putIfAbsent(location, new HashSet<>()) == null;
+        return vertices.putIfAbsent(GeographicPointNode.of(location), new HashSet<>()) == null;
     }
 
     /**
@@ -214,8 +214,7 @@ public class MapGraph {
      * @param nodeSearched A hook for visualization. See assignment instructions for how to use it.
      * @return The list of intersections that form the shortest path from start to goal (including both start and goal).
      */
-    public List<GeographicPoint> dijkstra(GeographicPoint start, GeographicPoint goal,
-            Consumer<GeographicPoint> nodeSearched) {
+    public List<GeographicPoint> dijkstra(GeographicPoint start, GeographicPoint goal, Consumer<GeographicPoint> nodeSearched) {
         // TODO: Implement this method in WEEK 4
 
         // Hook for visualization. See writeup.
