@@ -5,8 +5,6 @@ package roadgraph;
 
 import java.util.Objects;
 
-import geography.GeographicPoint;
-
 /**
  * Represent an edge of vertex point.
  *  
@@ -17,7 +15,7 @@ public class MapEdge {
 	/**
 	 * Point to reach form initial vertex.
 	 */
-    private GeographicPoint toPoint;
+    private GeographicPointNode toPoint;
     
     /**
      * Name of edge.
@@ -41,7 +39,7 @@ public class MapEdge {
      * @param name
      * @param type
      */
-    public MapEdge(GeographicPoint toPoint, double value, String name, String type) {
+    public MapEdge(GeographicPointNode toPoint, double value, String name, String type) {
         Objects.requireNonNull(toPoint);
         //  
         this.toPoint = toPoint;
@@ -50,7 +48,7 @@ public class MapEdge {
         this.type = type;
     }
     
-    public GeographicPoint getToPoint() {
+    public GeographicPointNode getToPoint() {
         return toPoint;
     }
     

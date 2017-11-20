@@ -24,7 +24,6 @@ public class GeographicPoint extends Double {
         return getDist(this.getX(), this.getY(), other.getX(), other.getY());
     }
 
-    
     private double getDist(double lat1, double lon1, double lat2, double lon2) {
         int R = 6373; // radius of the earth in kilometres
         double lat1rad = Math.toRadians(lat1);
