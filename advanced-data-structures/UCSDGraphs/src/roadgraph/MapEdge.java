@@ -63,4 +63,9 @@ public class MapEdge {
     public double getValue() {
         return value;
     }
+    
+    @Override
+    public String toString() {
+        return name + "[" + toPoint + "]";
+    }
 }

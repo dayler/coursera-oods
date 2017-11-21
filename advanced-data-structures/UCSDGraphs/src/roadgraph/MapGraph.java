@@ -102,9 +102,8 @@ public class MapGraph {
         }
         // check if "from" and "to" have been register.
         checkIfPointIsInGraph(from);
-        checkIfPointIsInGraph(to);
         // Add new edge for "from".
-        vertices.get(from).add(new MapEdge(GeographicPointNode.of(to), length, roadName, roadType));
+        vertices.get(from).add(new MapEdge(checkIfPointIsInGraph(to), length, roadName, roadType));
         
     }
     
@@ -113,11 +112,11 @@ public class MapGraph {
      * if it is not registered throws an <code>IllegalArgumentException</code>.
      * @param point
      */
-    private void checkIfPointIsInGraph(GeographicPoint point) {
-        if (vertices.containsKey(point)) {
-            return; // No op.
-        }
-        throw new IllegalArgumentException("The point:" + point.toString() + " is not in the Graph.");
+    private GeographicPointNode checkIfPointIsInGraph(GeographicPoint point) {
+        return vertices.keySet().stream()
+                                .filter(key -> key.equals(point))
+                                .findAny()
+                                .orElseThrow(() -> new IllegalArgumentException("The point:" + point.toString() + " is not in the Graph."));
     }
     
     /**
@@ -333,11 +332,11 @@ public class MapGraph {
         System.out.println();
         System.out.println("Test 1 using simpletest: Dijkstra should be 9 and AStar should be 5");
         List<GeographicPoint> testroute = simpleTestMap.dijkstra(testStart, testEnd);
-        List<GeographicPoint> testroute2 = simpleTestMap.aStarSearch(testStart, testEnd);
+//        List<GeographicPoint> testroute2 = simpleTestMap.aStarSearch(testStart, testEnd);
 //        System.out.println(testroute);
 //        System.out.println(testroute2);
         System.out.println(testroute.stream().map(gp -> "[Lat: " + gp.getX() + " Lon: " + gp.getY() + "]").collect(Collectors.toList()));
-        System.out.println(testroute2.stream().map(gp -> "[Lat: " + gp.getX() + " Lon: " + gp.getY() + "]").collect(Collectors.toList()));
+//        System.out.println(testroute2.stream().map(gp -> "[Lat: " + gp.getX() + " Lon: " + gp.getY() + "]").collect(Collectors.toList()));
 
 //        MapGraph testMap = new MapGraph();
 //        GraphLoader.loadRoadMap("data/maps/utc.map", testMap);
