@@ -103,7 +103,7 @@ public class MapGraph {
         // check if "from" and "to" have been register.
         checkIfPointIsInGraph(from);
         // Add new edge for "from".
-        vertices.get(from).add(new MapEdge(checkIfPointIsInGraph(to), length, roadName, roadType));
+        vertices.get(from).add(new MapEdge(checkIfPointIsInGraph(to), length, roadName, roadType, new ByDurationBuilder(roadType)));
         
     }
     
@@ -259,6 +259,7 @@ public class MapGraph {
                 if (settled.contains(gp)) {
                     continue;
                 }
+                // TODO 
                 // weight between current source and goal point. 
                 double tmp = current.getWeight() + edge.getValue() + moveCost.apply(gp, goal);
                 if (tmp < gp.getWeight()) { // if tmp is less than current weight.

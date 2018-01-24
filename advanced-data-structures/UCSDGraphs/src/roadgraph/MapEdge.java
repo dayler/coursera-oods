@@ -32,6 +32,8 @@ public class MapEdge {
      */
     private double value;
     
+    private WeightBuilder builder;
+    
     /**
      * MapEdge's Constructor.
      * @param toPoint
@@ -39,13 +41,15 @@ public class MapEdge {
      * @param name
      * @param type
      */
-    public MapEdge(GeographicPointNode toPoint, double value, String name, String type) {
+    public MapEdge(GeographicPointNode toPoint, double value, String name, String type, WeightBuilder builder) {
         Objects.requireNonNull(toPoint);
+        Objects.requireNonNull(builder, "builder");
         //  
         this.toPoint = toPoint;
         this.value = value;
         this.name = name;
         this.type = type;
+        this.builder = builder;
     }
     
     public GeographicPointNode getToPoint() {
@@ -61,7 +65,7 @@ public class MapEdge {
     }
     
     public double getValue() {
-        return value;
+        return builder.getValue(value);
     }
     
     @Override
